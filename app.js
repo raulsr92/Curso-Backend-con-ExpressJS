@@ -1,8 +1,18 @@
 
 import express from "express"
+import dotenv from "dotenv"
 
 const app = express()
-const port = process.env.PORT || 3000;
+
+//Cargar variables de entorno
+
+dotenv.config()
+
+
+const port = process.env.PORT || 3005;
+console.log(port)
+
+
 
 // Primer endpoint
 
@@ -24,5 +34,5 @@ app.get('/', (req, res) => {
 //Inicializar el servidor
 
 app.listen(port, ()=>{
-    console.log(`Nuestra app está funcionando en el puerto ${port}`)
+    console.log(`Servidor: http://localhost:${port}`)
 })
