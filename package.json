@@ -2,13 +2,13 @@
   "name": "project-express",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "raul.sr92@gmail.com",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "express": "^5.1.0"
