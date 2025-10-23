@@ -3,6 +3,15 @@ import express from "express"
 import dotenv from "dotenv"
 import bodyParser from "body-parser"
 
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const usersFilePath = path.join(__dirname,'users.json')
+
 const app = express()
 
 //Cargar variables de entorno
@@ -125,6 +134,29 @@ app.post('/api/data', (req, res)=>{
 }
 
 )
+
+//============= Rutas de proyecto booking ===================/
+
+app.get('/users', (req, res)=>{
+
+  fs.readFile(usersFilePath,"utf-8",(err, data)=>{
+
+    //Validación para saber si se esta pudiendo leer el archivo
+
+    if(err){
+
+      return res.status(500).json({error:"Error con la conexión de datos"})
+    }
+
+    const users = JSON.parse(data)
+
+    //Enviar la data
+
+    res.json(users)
+
+  })
+
+})
 
 
 
