@@ -159,6 +159,69 @@ app.get('/users', (req, res)=>{
 })
 
 
+app.post('/users',(req, res)=>{
+
+  //Guardar en una variable el nuevo usuario
+
+  const newUser = req.body
+
+  //Validación 1: nombre mínimo 3 caracteres
+
+  const {name,email} = newUser
+
+  if(!name || name.length<3){
+    return res.status(400).json({error: "El nombre debe contener almenos 3 caracteres"})
+  }
+
+  //Validación 2: email con formato válido
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if(!email || !emailRegex.test(email)){
+      return res.status(400).json({error: "El correo electrónico no tiene un formato válido"})
+  }
+
+  // Verificar si usuario ya existe
+
+  fs.readFile(usersFilePath,"utf-8",(err, data)=>{
+
+    //Validación para saber si se esta pudiendo leer el archivo
+
+    if(err){
+      return res.status(500).json({error:"Error con la conexión de datos"})
+    }
+
+    //obtener usuarios
+    const users = JSON.parse(data)
+
+    users.forEach(user => {
+      if(user.name === name || user.email === email){
+        return res.json({error:"El usuario o correo ya existe"}) 
+      }
+    });
+
+    users.push({id:(users.length+1),name,email})
+
+    //Guardar info
+
+    fs.writeFile(usersFilePath,JSON.stringify(users,null,2),(err)=>{
+
+      if(err){
+        return res.status(500).json({error:"Error al guardar al usuario"})
+      }      
+
+    })
+
+    //Enviar respuesta
+
+    res.status(201).json({
+      message: "Usuario agregado exitosamente",
+      newUser:newUser
+    })
+
+  })  
+
+})
 
 
 
