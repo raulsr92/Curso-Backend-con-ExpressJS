@@ -223,6 +223,61 @@ app.post('/users',(req, res)=>{
 
 })
 
+app.put('/users/:id', (req, res)=>{
+
+  const idUser = parseInt(req.params.id, 10)
+  console.log(`ID de usuario a modificar: ${idUser}`)
+
+  const infoUsuarioActualizada = req.body
+  console.log(infoUsuarioActualizada)
+
+  //Leer archivo JSON
+
+    fs.readFile(usersFilePath,"utf-8",(err, data)=>{
+
+      //Validación para saber si se esta pudiendo leer el archivo
+
+      if(err){
+        return res.status(500).json({error:"Error con la conexión de datos"})
+      }
+
+      //obtener usuarios
+      let users = JSON.parse(data)
+
+      console.log(users)
+
+      // Recorrer array y modificar aquel que tenga el ID dado como parámetro -> idUser
+
+      users = users.map(user => 
+        user.id === idUser ? {...user, ...infoUsuarioActualizada} : user
+      )
+
+      console.log(users)
+
+
+      //Guardar info
+
+        fs.writeFile(usersFilePath,JSON.stringify(users,null,2),(err)=>{
+
+        if(err){
+          return res.status(500).json({error:"Error al guardar al usuario"})
+        }      
+
+        })
+
+      //Enviar respuesta
+
+      const usuarioActualizado = users.find(user => user.id === idUser);
+
+        res.status(201).json({
+          message: "Usuario modificado exitosamente",
+          IdDeUsuarioModificado: idUser,
+          newUpdated: usuarioActualizado
+        })
+
+    })
+  // Fin lectura de JSON
+})
 
 
 //Inicializar el servidor
