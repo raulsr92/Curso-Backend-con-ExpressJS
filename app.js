@@ -6,7 +6,7 @@ import bodyParser from "body-parser"
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from "url"
-import { validateUser } from "./utils/validation.js"
+import { validateUser, isUniqueNumericId, validateUserExists } from "./utils/validation.js"
 
 
 const __filename = fileURLToPath(import.meta.url)
@@ -287,6 +287,10 @@ app.delete('/users/:id',(req, res)=>{
   const idUser = parseInt(req.params.id, 10)
   console.log(`ID de usuario a eliminar: ${idUser}`)
 
+  console.log(`Tipo de dato de idUser: ${typeof idUser}`)
+  console.log(isNaN(idUser))       
+  console.log(Number.isNaN(idUser))
+
   //Leer archivo JSON
     fs.readFile(usersFilePath,"utf-8",(err, data)=>{
 
@@ -299,6 +303,19 @@ app.delete('/users/:id',(req, res)=>{
       let users = JSON.parse(data)
       console.log(users)
 
+     //Uso de VALIDACIÓN DE archivo validation.js
+
+        console.log("Validando....")
+
+        const validation = isUniqueNumericId(idUser,users, true)
+
+        console.log(validation)
+        if(!validation){
+            return res.status(400).json({error:"El ID debe ser numérico"})
+        }
+       
+
+
       // Buscar usuario a eliminar y almacenarlo en una constante - método FIND
 
       const userToDelete = users.find((user) => user.id === idUser)
@@ -308,6 +325,19 @@ app.delete('/users/:id',(req, res)=>{
       console.log(userToDelete)      
       console.log("Index de usuario a eliminar: ")
       console.log(indexUserToDelete)   
+
+      //Validas que usuario existe
+
+      console.log("Validando existencia de usuario....")
+
+       const validarUserExist = validateUserExists(indexUserToDelete)
+
+      console.log(validarUserExist)
+      
+      //si usuario no existe, entra aquí
+        if(!validarUserExist){
+            return res.status(400).json({error:"El ID proporcionado no pertenece a ningún usuario"})
+        }   
 
       //Eliminar usuario
       const userDeleted = users.splice(indexUserToDelete,1)

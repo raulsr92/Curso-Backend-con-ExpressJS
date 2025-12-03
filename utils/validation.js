@@ -27,16 +27,25 @@ export function isUniqueNumericId(id, users, param) {
 
     console.log(id)
 
-    //Si param es TRUE, significa que estamos actualizando
+    //Si param es TRUE, significa que estamos actualizando o eliminando
 
     if(param){
-        return typeof id ==="number" 
+        return typeof id ==="number" && !isNaN(id)
     } else{
         return typeof id ==="number"  && !users.some(user => user.id == id)
     }
-    
+      
+}
+
+//Val N°04 evitar que se elimine el último usuario si el ID no existe
+
+export function validateUserExists(indexUserToDelete) {
+
+        return indexUserToDelete !== -1
     
 }
+
+
 
 //Función global de validación
 
