@@ -315,7 +315,6 @@ app.delete('/users/:id',(req, res)=>{
         }
        
 
-
       // Buscar usuario a eliminar y almacenarlo en una constante - método FIND
 
       const userToDelete = users.find((user) => user.id === idUser)
