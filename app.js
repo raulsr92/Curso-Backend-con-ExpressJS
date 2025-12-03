@@ -6,6 +6,8 @@ import bodyParser from "body-parser"
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from "url"
+import { validateUser } from "./utils/validation.js"
+
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -224,7 +226,6 @@ app.post('/users',(req, res)=>{
 })
 
 app.put('/users/:id', (req, res)=>{
-
   const idUser = parseInt(req.params.id, 10)
   console.log(`ID de usuario a modificar: ${idUser}`)
 
@@ -232,37 +233,38 @@ app.put('/users/:id', (req, res)=>{
   console.log(infoUsuarioActualizada)
 
   //Leer archivo JSON
-
     fs.readFile(usersFilePath,"utf-8",(err, data)=>{
 
       //Validación para saber si se esta pudiendo leer el archivo
 
       if(err){
-        return res.status(500).json({error:"Error con la conexión de datos"})
-      }
+        return res.status(500).json({error:"Error con la conexión de datos"})}
 
       //obtener usuarios
       let users = JSON.parse(data)
-
       console.log(users)
+
+      //Uso de VALIDACIÓN DE archivo validation.js
+
+      const validation = validateUser(infoUsuarioActualizada,users, idUser)
+
+      if(!validation.isValid){
+        return res.status(400).json({error:validation.error})
+      }
+      
 
       // Recorrer array y modificar aquel que tenga el ID dado como parámetro -> idUser
 
       users = users.map(user => 
-        user.id === idUser ? {...user, ...infoUsuarioActualizada} : user
-      )
+        user.id === idUser ? {...user, ...infoUsuarioActualizada} : user)
 
       console.log(users)
 
-
       //Guardar info
-
         fs.writeFile(usersFilePath,JSON.stringify(users,null,2),(err)=>{
 
         if(err){
-          return res.status(500).json({error:"Error al guardar al usuario"})
-        }      
-
+          return res.status(500).json({error:"Error al guardar al usuario"})}      
         })
 
       //Enviar respuesta
