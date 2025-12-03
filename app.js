@@ -281,6 +281,63 @@ app.put('/users/:id', (req, res)=>{
   // Fin lectura de JSON
 })
 
+app.delete('/users/:id',(req, res)=>{
+
+  //Capturar ID de usuario a eliminar
+  const idUser = parseInt(req.params.id, 10)
+  console.log(`ID de usuario a eliminar: ${idUser}`)
+
+  //Leer archivo JSON
+    fs.readFile(usersFilePath,"utf-8",(err, data)=>{
+
+      //Validación para saber si se esta pudiendo leer el archivo
+
+      if(err){
+        return res.status(500).json({error:"Error con la conexión de datos"})}
+
+      //obtener usuarios
+      let users = JSON.parse(data)
+      console.log(users)
+
+      // Buscar usuario a eliminar y almacenarlo en una constante - método FIND
+
+      const userToDelete = users.find((user) => user.id === idUser)
+      const indexUserToDelete = users.findIndex((user)=>user.id === idUser)
+
+      console.log("Usuario a eliminar: ")
+      console.log(userToDelete)      
+      console.log("Index de usuario a eliminar: ")
+      console.log(indexUserToDelete)   
+
+      //Eliminar usuario
+      const userDeleted = users.splice(indexUserToDelete,1)
+
+      console.log("Usuario eliminado")
+      console.log(userDeleted)
+
+      console.log("Usuarios restantes:")
+      console.log(users)
+      
+      //Guardar info
+      
+        fs.writeFile(usersFilePath,JSON.stringify(users,null,2),(err)=>{
+
+        if(err){
+          return res.status(500).json({error:"Error al guardar al usuario"})}      
+        })
+
+      //Enviar respuesta
+
+          res.status(201).json({
+            message: "Usuario eliminado exitosamente",
+            IdDeUsuarioEliminado: indexUserToDelete,
+            usuarioEliminado: userDeleted
+          })
+
+    })
+  // Fin lectura de JSON
+})
+
 
 //Inicializar el servidor
 
