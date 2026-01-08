@@ -8,6 +8,10 @@ import path from 'path'
 import { fileURLToPath } from "url"
 import { validateUser, isUniqueNumericId, validateUserExists } from "./utils/validation.js"
 
+//Middlewares
+
+import LoggerMiddleware from "./middlewares/logger.js"
+
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,8 +20,14 @@ const usersFilePath = path.join(__dirname,'users.json')
 
 const app = express()
 
+//Llamar al middleware
+
+app.use(LoggerMiddleware)
+
 //Cargar variables de entorno
 dotenv.config()
+
+
 
 const port = process.env.PORT || 3005;
 console.log(port)

@@ -1,12 +1,12 @@
 [
   {
-    "id": 1,
-    "name": "John Doe Zapara",
-    "email": "johnZ@example.com"
-  },
-  {
     "id": 2,
     "name": "Sara Del Castillo Rodas",
     "email": "saradcr@delcastillo.com"
+  },
+  {
+    "id": 3,
+    "name": "Usuario de Prueba",
+    "email": "prueba@gmail.com"
   }
 ]
