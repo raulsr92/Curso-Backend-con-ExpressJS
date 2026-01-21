@@ -9,8 +9,8 @@ import { fileURLToPath } from "url"
 import { validateUser, isUniqueNumericId, validateUserExists } from "./utils/validation.js"
 
 //Middlewares
-
 import LoggerMiddleware from "./middlewares/logger.js"
+import errorHandler from "./middlewares/errorHandler.js"
 
 
 const __filename = fileURLToPath(import.meta.url)
@@ -377,9 +377,21 @@ app.delete('/users/:id',(req, res)=>{
   // Fin lectura de JSON
 })
 
+// Endpoint de errores //
+
+app.get('/error', (req, res, next) =>{
+
+  next(new Error("Error Intencional"));
+
+})
+
+
+// Middleware de errores (AL FINAL de todas las rutas) 
+app.use(errorHandler)
 
 //Inicializar el servidor
 
 app.listen(port, ()=>{
     console.log(`Servidor: http://localhost:${port}`)
 })
+
